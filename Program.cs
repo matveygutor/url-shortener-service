@@ -30,7 +30,10 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// получение данных
-app.MapGet("/", (LinkContext db) => db.Links.ToList());
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+
+
 
 app.Run();

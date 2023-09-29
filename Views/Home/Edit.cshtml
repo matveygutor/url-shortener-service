@@ -1,0 +1,43 @@
+﻿@model test.Models.Link
+
+<h4>Link</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="LongURL" class="control-label"></label>
+                <input asp-for="LongURL" class="form-control" />
+                <span asp-validation-for="LongURL" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ShortURL" class="control-label"></label>
+                <input asp-for="ShortURL" class="form-control" />
+                <span asp-validation-for="ShortURL" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Click" class="control-label"></label>
+                <input asp-for="Click" class="form-control" />
+                <span asp-validation-for="Click" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
