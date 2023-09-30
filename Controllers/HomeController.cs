@@ -80,7 +80,7 @@ namespace test.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,LongURL,ShortURL,Date,Click")] Link link)
+        public async Task<IActionResult> Edit(int id, Link link)
         {
             if (id != link.Id)
             {

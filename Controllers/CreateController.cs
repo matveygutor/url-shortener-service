@@ -36,9 +36,7 @@ namespace test.Controllers
             {
                 return NotFound();
             }
-
-            var link = await _context.Links
-                .FirstOrDefaultAsync(m => m.Id == id);
+            Link link = await _context.Links.FirstAsync(m => m.Id == id);
             if (link == null)
             {
                 return NotFound();
@@ -59,20 +57,29 @@ namespace test.Controllers
         // POST: Create/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,LongURL,ShortURL,Date,Click")] Link link)
+        public async Task<IActionResult> Create(Link link)
         {
-            if (ModelState.IsValid)
+
+            bool result = _context.Links.Any(u => u.LongURL == link.LongURL);
+            if (!result)
             {
-                link.ShortURL = "https://" + Request.Host + "/" + GenerateToken();
-                link.Date = DateTime.Now;
-                link.Click = 0;
-                _context.Add(link);
-                await _context.SaveChangesAsync();
-                
-                return RedirectToAction(nameof(HomeController.Index));
+                if (ModelState.IsValid)
+                {
+                    link.ShortURL = GenerateToken();
+                    link.Date = DateTime.Now;
+                    link.Click = 0;
+                    _context.Add(link);
+                    await _context.SaveChangesAsync();
+                    return RedirectPermanent("~/Home/Index");
+                }
+            }
+            else
+            {
+                var searchId = _context.Links.First(l => l.LongURL == link.LongURL);
+                return RedirectToAction(nameof(Details), nameof(Create), new { id = searchId.Id });
                 
             }
-            await Response.SendFileAsync("_Layout.cshtml");
+
             return View(link);
 
         }
@@ -85,7 +92,7 @@ namespace test.Controllers
             {
                 sb.Append(chars[_random.Next(0, chars.Length)]);
             }
-            return sb.ToString();
+            return "https://" + Request.Host + "/" + sb.ToString();
         }
 
     }
