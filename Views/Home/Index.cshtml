@@ -1,15 +1,24 @@
 ﻿@model IEnumerable<test.Models.Link>
 
-
 @foreach (Link link in Model)
 {
     <div class="text-left">
         <hr />
         <dl class="row">
             <dt class="col-sm-2">
+                @link.Name
+            </dt>
+            <dd class="col-sm-10">
+            </dd>
+            <dt class="col-sm-2">
+                @link.Description
+            </dt>
+            <dd class="col-sm-10">
+            </dd>
+            <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.LongURL)
             </dt>
-            <dd class="col-sm-10" >
+            <dd class="col-sm-10">
                 @link.LongURL
             </dd>
             <dt class="col-sm-2">
@@ -33,11 +42,10 @@
         </dl>
     </div>
     <div>
-        
         <form asp-controller="Home" asp-action="Delete" method="post" asp-route-id="@link.Id">
             <input type="submit" value="Удалить" />
         </form> |
-        <a asp-action="Edit" asp-controller="Home" asp-route-id="@link.Id">Изменить</a> 
+        <a asp-action="Edit" asp-controller="Home" asp-route-id="@link.Id">Изменить</a>
     </div>
 }
 

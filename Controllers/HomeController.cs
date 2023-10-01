@@ -10,6 +10,7 @@ namespace test.Controllers
         private readonly ILogger<HomeController> _logger;
 
         LinkContext db;
+        Link URL;
 
         public HomeController(ILogger<HomeController> logger, LinkContext context)
         {
@@ -17,8 +18,22 @@ namespace test.Controllers
             db = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? I)
         {
+            if (I != null)
+            {
+                try
+                {
+                    URL = await db.Links.SingleAsync(l => l.Token == I);
+                    URL.Click += 1;
+                    await db.SaveChangesAsync();
+                    return RedirectPermanent(URL.LongURL);
+                }
+                catch (Exception e)
+                {
+                    await Response.WriteAsync(e.Message);
+                }                
+            }
             return View(await db.Links.ToListAsync());
         }
 
@@ -49,15 +64,18 @@ namespace test.Controllers
         {
             if (db.Links == null)
             {
-                return Problem("Entity set 'LinkContext.Links'  is null.");
+                return Problem("Entity set is null.");
             }
+
             var link = await db.Links.FindAsync(id);
+            
             if (link != null)
             {
                 db.Links.Remove(link);
             }
 
             await db.SaveChangesAsync();
+            
             return RedirectToAction(nameof(Index));
         }
 
@@ -70,10 +88,12 @@ namespace test.Controllers
             }
 
             var link = await db.Links.FindAsync(id);
+            
             if (link == null)
             {
                 return NotFound();
             }
+            
             return View(link);
         }
 
@@ -91,7 +111,8 @@ namespace test.Controllers
             {
                 try
                 {
-                    db.Update(link);
+                    db.Links.Update(link);
+                    
                     await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -105,6 +126,7 @@ namespace test.Controllers
                         throw;
                     }
                 }
+                
                 return RedirectToAction(nameof(Index));
             }
             return View(link);

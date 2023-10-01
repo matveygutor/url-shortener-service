@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using test;
 using test.Models;
-using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Text;
 
 namespace test.Controllers
@@ -17,6 +9,7 @@ namespace test.Controllers
     {
         private readonly LinkContext _context;
         private Random _random;
+
         public CreateController(LinkContext context)
         {
             _context = context;
@@ -24,7 +17,7 @@ namespace test.Controllers
         }
 
         // GET: Create
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View();
         }
@@ -36,7 +29,9 @@ namespace test.Controllers
             {
                 return NotFound();
             }
+
             Link link = await _context.Links.FirstAsync(m => m.Id == id);
+            
             if (link == null)
             {
                 return NotFound();
@@ -48,9 +43,7 @@ namespace test.Controllers
         // GET: Create/Create
         public IActionResult Create()
         {
-
             return View();
-
         }
 
 
@@ -59,40 +52,54 @@ namespace test.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Link link)
         {
-
             bool result = _context.Links.Any(u => u.LongURL == link.LongURL);
+            
             if (!result)
             {
                 if (ModelState.IsValid)
                 {
-                    link.ShortURL = GenerateToken();
+                    link.Token = GenerateToken();
+                    
+                    GenerateShortURL(link);
+                    
                     link.Date = DateTime.Now;
+                    
                     link.Click = 0;
+                    
                     _context.Add(link);
+                    
                     await _context.SaveChangesAsync();
+                    
                     return RedirectPermanent("~/Home/Index");
                 }
             }
             else
             {
                 var searchId = _context.Links.First(l => l.LongURL == link.LongURL);
-                return RedirectToAction(nameof(Details), nameof(Create), new { id = searchId.Id });
                 
+                return RedirectToAction(nameof(Details), nameof(Create), new { id = searchId.Id });
             }
 
             return View(link);
 
         }
 
+        private string GenerateShortURL(Link link) =>
+            link.ShortURL = "https://" + Request.Host + "/?I=" + link.Token;
+        
+
         private string GenerateToken()
         {
             string chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            
             var sb = new StringBuilder();
+            
             for (int i = 0; i < 7; i++)
             {
                 sb.Append(chars[_random.Next(0, chars.Length)]);
             }
-            return "https://" + Request.Host + "/" + sb.ToString();
+            
+            return sb.ToString();
         }
 
     }

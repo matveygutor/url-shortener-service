@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using test;
+using test.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string connection = builder.Configuration.GetConnectionString("DefaultConnection");
+string? connection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<LinkContext>(options => options.UseSqlServer(connection));
 
 // Add services to the container.
@@ -26,14 +28,13 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
-
-
-
 
 app.Run();
