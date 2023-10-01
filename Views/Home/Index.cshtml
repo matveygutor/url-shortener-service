@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<test.Models.Link>
 
-@foreach (Link link in Model)
+@foreach (Link link in Model.OrderByDescending(b => b.Date))
 {
     <div class="text-left">
         <hr />
@@ -25,7 +25,7 @@
                 @Html.DisplayNameFor(model => model.ShortURL)
             </dt>
             <dd class="col-sm-10">
-                @link.ShortURL
+                <a href="@link.ShortURL">@link.ShortURL</a>
             </dd>
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.Date)
