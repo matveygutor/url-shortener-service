@@ -22,17 +22,15 @@ namespace test.Controllers
         {
             if (I != null)
             {
-                try
+                bool any = await db.Links.AnyAsync(p => p.Token == I);
+                if (!any)
                 {
-                    URL = await db.Links.SingleAsync(l => l.Token == I);
-                    URL.Click += 1;
-                    await db.SaveChangesAsync();
-                    return RedirectPermanent(URL.LongURL);
+                    return Problem($"Token '{I}' is not registered in the system");
                 }
-                catch (Exception e)
-                {
-                    await Response.WriteAsync(e.Message);
-                }                
+                URL = await db.Links.SingleAsync(p => p.Token == I);
+                URL.Click++;
+                await db.SaveChangesAsync();
+                return RedirectPermanent(URL.LongURL);
             }
             return View(await db.Links.ToListAsync());
         }
@@ -68,14 +66,14 @@ namespace test.Controllers
             }
 
             var link = await db.Links.FindAsync(id);
-            
+
             if (link != null)
             {
                 db.Links.Remove(link);
             }
 
             await db.SaveChangesAsync();
-            
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -88,12 +86,12 @@ namespace test.Controllers
             }
 
             var link = await db.Links.FindAsync(id);
-            
+
             if (link == null)
             {
                 return NotFound();
             }
-            
+
             return View(link);
         }
 
@@ -112,7 +110,7 @@ namespace test.Controllers
                 try
                 {
                     db.Links.Update(link);
-                    
+
                     await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -126,7 +124,7 @@ namespace test.Controllers
                         throw;
                     }
                 }
-                
+
                 return RedirectToAction(nameof(Index));
             }
             return View(link);
