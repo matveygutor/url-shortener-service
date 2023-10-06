@@ -39,6 +39,9 @@ namespace test.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("LastDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("LongURL")
                         .HasColumnType("nvarchar(max)");
 

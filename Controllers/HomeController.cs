@@ -10,7 +10,7 @@ namespace test.Controllers
         private readonly ILogger<HomeController> _logger;
 
         LinkContext db;
-        Link URL;
+        
 
         public HomeController(ILogger<HomeController> logger, LinkContext context)
         {
@@ -18,19 +18,30 @@ namespace test.Controllers
             db = context;
         }
 
-        public async Task<IActionResult> Index(string? I)
+
+        [Route("{token:minlength(7)?}")]
+        public async Task<IActionResult> Index(string? token)
         {
-            if (I != null)
+            if (token != null)
             {
-                bool any = await db.Links.AnyAsync(p => p.Token == I);
+                bool any = await db.Links.AnyAsync(p => p.Token == token);
                 if (!any)
                 {
-                    return Problem($"Token '{I}' is not registered in the system");
+                    return Problem($"Token '{token}' is not registered in the system");
                 }
-                URL = await db.Links.SingleAsync(p => p.Token == I);
-                URL.Click++;
-                await db.SaveChangesAsync();
-                return RedirectPermanent(URL.LongURL);
+                else
+                {
+                    Link URL = new();
+                    URL = await db.Links.SingleAsync(p => p.Token == token);
+
+                    URL.Click++;
+                    URL.LastDate = DateTime.Now;
+                    db.Links.Update(URL);
+
+                    await db.SaveChangesAsync();
+
+                    return RedirectPermanent(URL.LongURL);
+                }
             }
             return View(await db.Links.ToListAsync());
         }

@@ -69,8 +69,8 @@ namespace test.Controllers
                     _context.Add(link);
                     
                     await _context.SaveChangesAsync();
-                    
-                    return RedirectPermanent("~/Home/Index");
+
+                    return Redirect("https://" + Request.Host);
                 }
             }
             else
@@ -85,7 +85,7 @@ namespace test.Controllers
         }
 
         private string GenerateShortURL(Link link) =>
-            link.ShortURL = "https://" + Request.Host + "/?I=" + link.Token;
+            link.ShortURL = "https://" + Request.Host + "/" + link.Token;
         
 
         private string GenerateToken()
