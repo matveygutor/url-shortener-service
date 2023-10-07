@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\college\\source\\repos\\asp\\test\\test.csproj": {}
+    "D:\\job\\Avtobus1\\test\\test.csproj": {}
   },
   "projects": {
-    "D:\\college\\source\\repos\\asp\\test\\test.csproj": {
+    "D:\\job\\Avtobus1\\test\\test.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\college\\source\\repos\\asp\\test\\test.csproj",
+        "projectUniqueName": "D:\\job\\Avtobus1\\test\\test.csproj",
         "projectName": "test",
-        "projectPath": "D:\\college\\source\\repos\\asp\\test\\test.csproj",
+        "projectPath": "D:\\job\\Avtobus1\\test\\test.csproj",
         "packagesPath": "C:\\Users\\Матвей\\.nuget\\packages\\",
-        "outputPath": "D:\\college\\source\\repos\\asp\\test\\obj\\",
+        "outputPath": "D:\\job\\Avtobus1\\test\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Матвей\\AppData\\Roaming\\NuGet\\NuGet.Config",

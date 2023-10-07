@@ -31,16 +31,20 @@ namespace test.Controllers
                 }
                 else
                 {
-                    Link URL = new();
-                    URL = await db.Links.SingleAsync(p => p.Token == token);
-
-                    URL.Click++;
-                    URL.LastDate = DateTime.Now;
-                    db.Links.Update(URL);
-
-                    await db.SaveChangesAsync();
-
-                    return RedirectPermanent(URL.LongURL);
+                    try
+                    {
+                        Link URL = new();
+                        URL = await db.Links.SingleAsync(p => p.Token == token);
+                        URL.Click++;
+                        URL.LastDate = DateTime.Now;
+                        db.Links.Update(URL);
+                        await db.SaveChangesAsync();
+                        return RedirectPermanent(URL.LongURL);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Problem($"{ex.Message}");
+                    }
                 }
             }
             return View(await db.Links.ToListAsync());
