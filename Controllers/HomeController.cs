@@ -18,6 +18,17 @@ namespace test.Controllers
             db = context;
         }
 
+        private async Task<Link> Click(Link URL)
+        {
+            URL.Click = URL.Click + 1;
+            URL.LastDate = DateTime.Now;
+
+            db.Links.Update(URL);
+            await db.SaveChangesAsync();
+
+            return URL;
+        }
+
 
         [Route("{token:minlength(7)?}")]
         public async Task<IActionResult> Index(string? token)
@@ -33,12 +44,8 @@ namespace test.Controllers
                 {
                     try
                     {
-                        Link URL = new();
-                        URL = await db.Links.SingleAsync(p => p.Token == token);
-                        URL.Click++;
-                        URL.LastDate = DateTime.Now;
-                        db.Links.Update(URL);
-                        await db.SaveChangesAsync();
+                        Link URL = await db.Links.SingleAsync(p => p.Token == token);
+                        URL = await Click(URL);
                         return RedirectPermanent(URL.LongURL);
                     }
                     catch (Exception ex)

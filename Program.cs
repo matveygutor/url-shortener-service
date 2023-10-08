@@ -1,17 +1,12 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Configuration;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Data.Entity.Migrations;
 using test;
-using test.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 string? connection = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<LinkContext>(options => options.UseSqlServer(connection));
+
+builder.Services.AddDbContextPool<LinkContext>(options => options.UseSqlServer(connection));
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
